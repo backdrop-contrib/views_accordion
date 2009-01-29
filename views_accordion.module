@@ -1,0 +1,90 @@
+<?php
+// $Id$
+/**
+ * @file
+ * Provide an accordion display style for Views.
+ *
+ * This is a placeholder file so drupal will enable the module. All logic is contained in
+ * other files located with the module.
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function views_accordion_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#views_accordion':
+      $output = '<p>'. t('The Views Accordion module is a Views style plugin that displays the results in a JQuery accordion style.') .'</p>';
+      $output .= '<h3>'. t('How to use the plugin') .'</h3>';
+      $output .= t('<strong>IMPORTANT:</strong> The first field in order of appearance will be the one used as the "header" or "trigger" of the accordion action.') .'<br />';
+      $output .= t('Your view must meet this requirement: <em>Row style</em> must be set to <em>Fields</em>') .'<br />';
+      $output .= t('Choose <em>Views Accordion</em> in the <em>Style</em> dialog within your view, which will prompt you to configure:');
+      $output .= '<ul>';
+      $output .= '<li>'. t('<strong>Transition time</strong>: How fast you want the opening and closing of the sections to last for, in seconds. Default is half a second.') .'</li>';
+      $output .= '<li>'. t('<strong>Start with the first row opened</strong>: Wether or not the first row of the view should start opened when the view is first shown. Uncheck this if you would like the accordion to start closed.') .'</li>';
+      $output .= '</ul>';
+      $output .= '<h3>'. t('Theming information') .'</h3>';
+      $output .= t('This module is intentionally left unstyled. Included in the module for your convenience:');
+      $output .= '<ul><li>'. t('<strong>views-acordion.css</strong> - with how the classes the author thought would be best used, mostly empty.') .'</li>';
+      $output .= '<li>'. t('<strong>views-view-accordion.tpl.php</strong> - copy/paste into your theme directory - please the comments in this file for requirements/instructions.') .'</li></ul>';
+      return $output;
+  }
+}
+
+
+/**
+ * Implementation of hook_views_api().
+ */
+function views_accordion_views_api() {
+  return array('api' => 2);
+}
+
+/**
+ * Template function for views_accordion
+ *
+ * @param array $vars
+ *  Array of template variables.
+ */
+function template_preprocess_views_view_accordion(&$vars) {
+  drupal_add_css(drupal_get_path('module', 'views_accordion') .'/views-accordion.css');
+
+  $view = $vars['view'];
+  $options = $view->style_plugin->options;
+  $vars['views_accordion_id'] = 'views-accordion-'. $view->name .'-'. $view->current_display;
+
+  drupal_add_js(drupal_get_path('module', 'views_accordion') .'/views-accordion.js');
+
+  $view_settings['speed'] = check_plain($options['speed']) * 1000;
+  $view_settings['firstopen'] = $options['first-open'];
+  $i = 0;
+  foreach ($view->field as $value) {
+    if ($i == 0) {
+      $view_settings['header'] = $value->field;
+      $i++;
+    }
+  }
+
+  drupal_add_js(array('views_accordion' => array($vars['views_accordion_id'] => $view_settings)), 'setting');
+}
+
+/**
+ * Only returns true the first time it's called for an id
+ *
+ * @param $id
+ *  A uniqe view id.
+ *
+ * @return bool
+ *  TRUE for the first time called for a given $id
+ *  FALSE for each time after that
+ */
+function theme_views_accordion_display_item($id) {
+  static $display = array();
+
+  if (!isset($display[$id])) $display[$id] = FALSE;
+
+  $output = $display[$id];
+
+  if ($display[$id] == FALSE) $display[$id] = TRUE;
+
+  return $output;
+}

@@ -1,0 +1,7 @@
+; $Id$
+name = Views Accordion
+description = Provides an accordion views display plugin.
+package = Views
+core = 6.x
+dependencies[] = views
+

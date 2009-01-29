@@ -1,0 +1,34 @@
+/* $Id$ */
+/*
+ * @file
+ * Style sheet for the views_accordion module
+ * 
+ * Intentionaly left empty in order not to get in your way
+ * Only proof of concept
+ *
+ * .views-accordion-item wrappers get per-row classes like item-0, item-1 and so on
+ *  style each row independently like this:
+ * .views-accordion .item-1
+*/
+
+/* the whole accordion */
+.views-accordion {
+}
+
+/* all accordion sections */
+.views-accordion-item {
+}
+
+/* the content hidden/shown within each section */
+.views-accordion-item .accordion-content {
+}
+
+/* the header the user clicks to open sections */
+.views-accordion-item .accordion-header {
+  cursor: pointer;
+}
+
+/* header mouse-over and section-opened states */
+.views-accordion-item .accordion-header-hover,
+.views-accordion-item .accordion-header-active {
+}
