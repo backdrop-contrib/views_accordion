@@ -57,25 +57,13 @@ function views_accordion_views_api() {
  * The JS file is loaded within render() in views_accordion_style_plugin.inc
  */
 function template_preprocess_views_view_accordion(&$vars) {
-  $view = $vars['view'];
-  $options = $view->style_plugin->options;
-  $rows = $vars['rows'];
+  // inherit the normal unformatted classes
+  template_preprocess_views_view_unformatted($vars);
 
-  $vars['classes'] = array();
-  // Set up striping values.
-  foreach ($rows as $id => $row) {
-    $vars['classes'][$id] = 'views-accordion-item accordion-item-'. $id;
-    $vars['classes'][$id] .= ' accordion-item-'. ($id % 2 ? 'even' : 'odd');
-    if ($id == 0) {
-      $vars['classes'][$id] .= ' accordion-item-first';
-    }
-  }
-  $vars['classes'][$id] .= ' accordion-item-last';
-  $vars['views_accordion_id'] = 'views-accordion-'. $view->name .'-'. $view->current_display;
+  $vars['use_group_header'] = $vars['options']['use-grouping-header'];
 
-  if ($options['include-style']) {
-    drupal_add_css(drupal_get_path('module', 'views_accordion') .'/views-accordion.css');
-  }
+  // The template variable 'view_accordion_id' MUST be the same as $accordion_id in the render() function inside the style plugin
+  $vars['view_accordion_id'] = 'views-accordion-'. $vars['view']->name .'-'.$vars['view']->current_display .'-header'; // Don't touch it or it will stop working
 }
 
 /**

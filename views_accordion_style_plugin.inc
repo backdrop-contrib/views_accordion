@@ -15,16 +15,24 @@ class views_accordion_style_plugin extends views_plugin_style {
   function option_definition() {
     $options = parent::option_definition();
     $options['use-grouping-header'] = array('default' => 0);
-    $options['keep-one-open'] = array('default' => 0);
-    $options['disable-close-others'] = array('default' => 0);
-    $options['speed'] = array('default' => 0.5);
-    $options['start-open'] = array('default' => 1);
+    $options['collapsible'] = array('default' => 0);
     $options['row-start-open'] = array('default' => 0);
-    $options['toggle-links'] = array('default' => 0);
-    $options['include-style'] = array('default' => 1);
-    $options['auto-cycle'] = array('default' => 0);
-    $options['auto-cycle-speed'] = array('default' => 5);
-    $options['header-is-link'] = array('default' => 0);
+    $options['animated'] = array('default' => 'slide');
+    $options['autoheight'] = array('default' => 1);
+    $options['event'] = array('default' => 'click');
+    $options['fillspace'] = array('default' => 0);
+    $options['navigation'] = array('default' => 0);
+    $options['clearstyle'] = array('default' => 0);
+
+    /*
+     * @TODO:
+     * 1. Figure out how to provide support for jQuery UI themes
+     * 2. Provide support for missing accordion options:
+     *    disabled
+     *    icons
+     *    navigationFilter
+     * See http://jqueryui.com/demos/accordion/
+     */
     return $options;
   }
 
@@ -44,6 +52,14 @@ class views_accordion_style_plugin extends views_plugin_style {
     for ($i = 1; $i <= $maxitems; $i++){
       $rsopen_options[] = t('Row ') . $i;
     }
+    $rsopen_options['none'] = t('None');
+
+    $animated_options = array(
+      'none' => t('None'),
+      'slide' => t('Slide'),
+      'bounceslide' => t('Bounceslide'),
+      // @TODO: figure out what other animations core comes with that we can use with the accordion
+    );
 
     $form['use-grouping-header'] = array(
       '#type' => 'checkbox',
@@ -53,81 +69,59 @@ class views_accordion_style_plugin extends views_plugin_style {
       '#process' => array('views_process_dependency'),
       '#dependency' => array('edit-style-options-grouping' => $options),
     );
-    $form['start-open'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Start with a row opened'),
-      '#default_value' => $this->options['start-open'],
-      '#description' => t('Whether or not you would like the accordion to start with a row opened. If checked, you will be able to choose which row to be opened at start.'),
-    );
     $form['row-start-open'] = array(
       '#type' => 'select',
       '#title' => t('Row to display opened on start'),
       '#default_value' => $this->options['row-start-open'],
-      '#description' => t('Choose which row should start opened when the accordion first loads. Uncheck "<em>Start with a row opened</em>" to start with all rows closed.'),
+      '#description' => t('Choose which row should start opened when the accordion first loads. If you want all to start closed, choose "None", and make sure to have "Allow for all rows to be closed" on below.'),
       '#options' => $rsopen_options,
-      '#process' => array('views_process_dependency'),
-      '#dependency' => array('edit-style-options-start-open' => array(TRUE)),
     );
-    $form['keep-one-open'] = array(
+    $form['collapsible'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Allways keep one item opened'),
-      '#default_value' => $this->options['keep-one-open'],
-      '#description' => t('If you check this on, when the user clicks on an opened item, it will not close.'),
+      '#title' => t('Allow for all rows to be closed'),
+      '#default_value' => $this->options['collapsible'],
+      '#description' => t('If you check this on, when the user clicks on an opened item, it will close.'),
     );
-    $form['disable-close-others'] = array(
+    $form['animated'] = array(
+      '#type' => 'select',
+      '#title' => t('Animation effect'),
+      '#default_value' => $this->options['animated'],
+      '#description' => t('Choose what animation effect you would like to see, or "None" to disable it.'),
+      '#options' => $animated_options,
+    );
+     $form['autoheight'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Disable auto-closing of opened accordion items'),
-      '#default_value' => $this->options['disable-close-others'],
-      '#description' => t('If you check this on, when the user opens an item, it will not close the already opened items.'),
+      '#title' => t('Autoheight'),
+      '#default_value' => $this->options['autoheight'],
+      '#description' => t('If set, the highest content part is used as height reference for all other parts. Provides more consistent animations.'),
     );
-
-    $form['speed'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Transition time'),
-      '#size' => 5,
-      '#maxlength' => 5,
-      '#default_value' => $this->options['speed'],
-      '#field_suffix' => t('Seconds'),
-      '#required' => TRUE,
-      '#element_validate' => array('accordion_speed_validate'),
-      '#description' => t('The time in seconds to open-close sections. The value <em>must be higher than 0</em>. If you would like it to be instanteneous, enter 0.001. Do not use commas in this field.'),
+    $form['event'] = array(
+      '#type' => 'select',
+      '#title' => t('Event'),
+      '#default_value' => $this->options['event'],
+      '#description' => t('The event on which to trigger the accordion.'),
+      '#options' => array(
+        'click' => t('Click'),
+        'mouseover' => t('Mouseover'),
+      ),
     );
-    $form['toggle-links'] = array(
+    $form['fillspace'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Display <em>Open All</em> - <em>Close All</em> links'),
-      '#default_value' => $this->options['toggle-links'],
-      '#description' => t('Whether or not to have links that toggle all content opened/closed. Note that these will NOT display if <em>Auto cycle</em> is on.'),
+      '#title' => t('Fillspace'),
+      '#default_value' => $this->options['fillspace'],
+      '#description' => t('If set, the accordion completely fills the height of the parent element. Overrides autoheight.'),
     );
-    $form['include-style'] = array(
+    $form['navigation'] = array(
       '#type' => 'checkbox',
-      '#title' => t("Use the module's default styling"),
-      '#default_value' => $this->options['include-style'],
-      '#description' => t("If you disable this, the file in the module's directory <em>views-accordion.css</em> will not be loaded"),
+      '#title' => t('Navigation'),
+      '#default_value' => $this->options['navigation'],
+      '#description' => t('If set, looks for the anchor that matches location.href and activates it. Great for href-based state-saving. Use navigationFilter to implement your own matcher.'),
     );
-    $form['auto-cycle'] = array(
+    $form['clearstyle'] = array(
       '#type' => 'checkbox',
-      '#title' => t('Auto cycle through the items'),
-      '#default_value' => $this->options['auto-cycle'],
-      '#description' => t('Whether or not you would like the accordion to cycle through each item automaticaly.'),
-    );
-    $form['auto-cycle-speed'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Cycle transition time'),
-      '#size' => 5,
-      '#maxlength' => 5,
-      '#default_value' => $this->options['auto-cycle-speed'],
-      '#field_suffix' => t('Seconds'),
-      '#required' => FALSE,
-      '#element_validate' => array('accordion_speed_validate'),
-      '#description' => t('The time in seconds it will wait before opening the next item. This <strong>will be added to the Transition time you entered above</strong>'),
-      '#process' => array('views_process_dependency'),
-      '#dependency' => array('edit-style-options-auto-cycle' => array(TRUE)),
-    );
-    $form['header-is-link'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Allow links in header to be clickable'),
-      '#default_value' => $this->options['header-is-link'],
-      '#description' => t('Whether or not clicking on a item in the header will follow a link or only open the accordion.'),
+      '#title' => t('Clearstyle'),
+      '#default_value' => $this->options['clearstyle'],
+      '#description' => t("If set, clears height and overflow styles after finishing animations. This enables accordions to work with dynamic content. Won't work together with autoHeight."),
     );
   }
 
@@ -138,27 +132,47 @@ class views_accordion_style_plugin extends views_plugin_style {
     $output = parent::render();
 
     // dpm($this->display->handler->get_option('fields')); // for dev-troubleshooting
+
+    drupal_add_library('system', 'ui.accordion');
+    drupal_add_js(drupal_get_path('module', 'views_accordion') .'/views-accordion.js');
+
+    // Add the appropiate effect library if necessary
+    // @TODO: figure out what other animations core comes with that we can use with the accordion
+    $effect = $this->options['animated'];
+    if(($effect !== 'none') && ($effect !== 'slide')){
+      switch($effect) {
+          case 'bounceslide':
+            $library = 'effects.bounce';
+            break;
+      }
+      if(isset($library)){
+        drupal_add_library('system', $library);
+      }
+    }
+
     // Preparing the js variables and adding the js to our display
     // we do it here so we dont have it run once every group
-    drupal_add_js(drupal_get_path('module', 'views_accordion') .'/views-accordion.js');
-    $view_settings['keeponeopen'] = $this->options['keep-one-open'];
-    $view_settings['startopen'] = $this->options['start-open'];
-    $view_settings['rowstartopen'] = $this->options['row-start-open'];
-    $view_settings['speed'] = check_plain($this->options['speed']) * 1000;
-    $view_settings['disablecloseothers'] = $this->options['disable-close-others'];
-    $view_settings['grouping'] =  $this->options['grouping'] ? 1 : 0;
-    $view_settings['togglelinks'] = $this->options['toggle-links'];
-    $view_settings['autocycle'] = $this->options['auto-cycle'];
-    $view_settings['autocyclespeed'] = check_plain($this->options['auto-cycle-speed']) * 1000;
-    $view_settings['display'] =  'views-accordion-'. $this->view->name .'-'. $this->view->current_display;
-    $view_settings['usegroupheader'] = $view_settings['grouping'] ? $this->options['use-grouping-header'] : 0;
-    $view_settings['enableheaderlinks'] =  $this->options['header-is-link'] ? 1 : 0;
+    $view_settings['collapsible'] = $this->options['collapsible'];
+    $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : $this->options['row-start-open'] + 0; // forces it to add it as an integrer instead of a string - ugly hack?
+    $view_settings['animated'] = ($this->options['animated'] == 'none') ? FALSE : $this->options['animated'];
+    $view_settings['autoheight'] = $this->options['autoheight'];
+    $view_settings['event'] = $this->options['event'];
+    $view_settings['fillspace'] = $this->options['fillspace'];
+    $view_settings['navigation'] = $this->options['navigation'];
+    $view_settings['clearstyle'] = $this->options['clearstyle'];
 
-    $view_id = 'views-accordion-'. $this->view->name .'-'. $this->view->current_display;
+    $view_settings['grouping'] =  $this->options['grouping'] ? 1 : 0;
+
+    $view_settings['display'] =  $this->view->current_display;
+    $view_settings['viewname'] = $this->view->name;
+    $view_settings['usegroupheader'] = $view_settings['grouping'] ? $this->options['use-grouping-header'] : 0;
+
+    $accordion_id = 'views-accordion-'. $this->view->name .'-'. $this->view->current_display;
 
     if ($view_settings['usegroupheader'] == 1) {
-      $view_settings['header'] = 'h3.'. $view_id;
+      $view_settings['header'] = 'h3.'. $accordion_id .'-header';
     }
+
     // Used to get the first field to be used as the accordion header
     if ($view_settings['usegroupheader'] == 0) {
       $i = 0;
@@ -169,28 +183,9 @@ class views_accordion_style_plugin extends views_plugin_style {
         }
       }
     }
-    drupal_add_js(array('views_accordion' => array($view_id => $view_settings)), 'setting');
+
+    drupal_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
 
     return $output;
-  }
-}
-
-/**
-  * Validates the options entered
-  */
-function accordion_speed_validate($element, &$form_state) {
-  /* must be numeric value */
-  if(!is_numeric($element['#value'])) {
-    form_error($element, ('<em>'. ($element['#title'] . t('</em> must be a <em>numberic</em> value.'))));
-  }
-
-  /* dont allow commas */
-  if (strstr($element['#value'], ',')) {
-    form_error($element, t('Please use a "." instead of a "," in the <em>') . $element['#title'] . t('</em> field.'));
-  }
-
-  /* must be higher than 0 */
-  if ($element['#value'] <= 0) {
-    form_error($element, ('<em>'. ($element['#title'] . t('</em> must be a <em>number</em> higher than 0.<br />If you would like it to be instanteneous, enter 0.001'))));
   }
 }

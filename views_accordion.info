@@ -2,6 +2,8 @@
 name = Views Accordion
 description = Provides an accordion views display plugin.
 package = Views
-core = 6.x
+core = 7.x
 dependencies[] = views
 
+files[] = views_accordion.views.inc
+files[] = views_accordion_style_plugin.inc
