@@ -12,6 +12,19 @@ Drupal.behaviors.views_accordion =  {
           var displaySelector = '.view-id-'+ this.viewname +'.view-display-id-'+ this.display +' .view-content';
           var headerSelector = usegroupheader ? (this.header) : ('.' + this.header); // this.header is the class of our first field
 
+          // Prepare our markup for jquery ui accordion
+          $(headerSelector).each(function(){
+            $this = $(this);
+            // if the header is not already using an anchor tag, add one
+            if($this.find('a').length == 0){
+              $this.wrapInner('<a href="#"></a>');
+            }
+            // Wrap the accordion content within a div if necessary
+            if (!usegroupheader) {
+               $(this).siblings().wrapAll('<div></div');
+             }
+          });
+
           /*
            * Fixing ajax views bug (was wrapping the div everytime), we need to check hasRan
            * It seems to work fine even with grouping enabled, though further testing couldn't hurt
@@ -23,8 +36,6 @@ Drupal.behaviors.views_accordion =  {
           $(displaySelector).accordion({
               header: headerSelector,
               animated: this.animated,
-              //event: "mouseover"
-             // navigation: true
               active: this.rowstartopen,
               collapsible: this.collapsible,
               autoHeight: this.autoheight,
