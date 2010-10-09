@@ -16,7 +16,7 @@ function views_accordion_views_plugins() {
         'theme' => 'views_view_accordion',
         'help' => t('Display a JQuery accordion with the results. The first field will be used as the header and trigger.'),
         'handler' => 'views_accordion_style_plugin',
-        'uses row plugin' => FALSE,
+        'uses row plugin' => TRUE,
         'uses options' => TRUE,
         'uses fields' => TRUE,
         'type' => 'normal',
