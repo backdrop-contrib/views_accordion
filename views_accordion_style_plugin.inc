@@ -66,7 +66,7 @@ class views_accordion_style_plugin extends views_plugin_style {
       '#title' => t('Use the group header as the Accordion header'),
       '#default_value' => $this->options['use-grouping-header'],
       '#description' => t('If checked, the Group\'s header will be used to open/close the accordion.'),
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-style-options-grouping' => $options),
     );
     $form['row-start-open'] = array(
