@@ -64,6 +64,9 @@ function template_preprocess_views_view_accordion(&$vars) {
 
   // The template variable 'view_accordion_id' MUST be the same as $accordion_id in the render() function inside the style plugin
   $vars['view_accordion_id'] = 'views-accordion-'. $vars['view']->name .'-'.$vars['view']->current_display .'-header'; // Don't touch it or it will stop working
+
+  // Add the css for fixing/preventing accordion issues
+  drupal_add_css(drupal_get_path('module', 'views_accordion') .'/views-accordion.css');
 }
 
 /**
