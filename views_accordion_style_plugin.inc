@@ -26,7 +26,7 @@ class views_accordion_style_plugin extends views_plugin_style {
 
     /*
      * @TODO:
-     * 1. Figure out how to provide support for jQuery UI themes
+     * 1. Figure out if/how to provide support for jQuery UI themes
      * 2. Provide support for missing accordion options:
      *    disabled
      *    icons
@@ -57,8 +57,43 @@ class views_accordion_style_plugin extends views_plugin_style {
     $animated_options = array(
       'none' => t('None'),
       'slide' => t('Slide'),
+      'swing' => t('Swing'),
+      'linear' => t('Linear'),
       'bounceslide' => t('Bounceslide'),
-      // @TODO: figure out what other animations core comes with that we can use with the accordion
+      'easeInQuart' => t('easeInQuart'),
+      'easeOutQuart' => t('easeOutQuart'),
+      'easeInOutQuart' => t('easeInOutQuart'),
+      'easeInExpo' => t('easeInExpo'),
+      'easeOutExpo' => t('easeOutExpo'),
+      'easeInOutExpo' => t('easeInOutExpo'),
+      'easeInBack' => t('easeInBack'),
+      'easeOutBack' => t('easeOutBack'),
+      'easeInOutBack' => t('easeInOutBack'),
+      'easeInQuad' => t('easeInQuad'),
+      'easeOutQuad' => t('easeOutQuad'),
+      'easeInOutQuad' => t('easeInOutQuad'),
+      'easeInQuint' => t('easeInQuint'),
+      'easeOutQuint' => t('easeOutQuint'),
+      'easeInOutQuint' => t('easeInOutQuint'),
+      'easeInCirc' => t('easeInCirc'),
+      'easeOutCirc' => t('easeOutCirc'),
+      'easeInOutCirc' => t('easeInOutCirc'),
+      'easeInBounce' => t('easeInBounce'),
+      'easeOutBounce' => t('easeOutBounce'),
+      'easeInOutBounce' => t('easeInOutBounce'),
+      'easeInCubic' => t('easeInCubic'),
+      'easeOutCubic' => t('easeOutCubic'),
+      'easeInOutCubic' => t('easeInOutCubic'),
+      'easeInSine' => t('easeInSine'),
+      'easeOutSine' => t('easeOutSine'),
+      'easeInOutSine' => t('easeInOutSine'),
+      'easeInElastic' => t('easeInElastic'),
+      'easeOutElastic' => t('easeOutElastic'),
+      'easeInOutElastic' => t('easeInOutElastic'),
+      /*
+       * @TODO: Any other animations core comes with that we can use with the accordion?
+       * We've used all the easing effects form ui effects core.
+       */
     );
 
     $form['use-grouping-header'] = array(
@@ -137,16 +172,17 @@ class views_accordion_style_plugin extends views_plugin_style {
     drupal_add_js(drupal_get_path('module', 'views_accordion') .'/views-accordion.js');
 
     // Add the appropiate effect library if necessary
-    // @TODO: figure out what other animations core comes with that we can use with the accordion
     $effect = $this->options['animated'];
     if(($effect !== 'none') && ($effect !== 'slide')){
+      // for now we only use ui core effects library, which provides the easing effects.
+      // this switch is left here in case we actualy need to load any other libraries
       switch($effect) {
-          case 'bounceslide':
-            $library = 'effects.bounce';
+          default:
+            $library = 'effects';
             break;
       }
       if(isset($library)){
-        drupal_add_library('system', $library);
+        drupal_add_library('system', 'effects');
       }
     }
 
