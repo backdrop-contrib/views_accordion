@@ -4,28 +4,40 @@ Drupal.behaviors.views_accordion =  {
     if(Drupal.settings.views_accordion){
       (function ($) {
         $.each(Drupal.settings.views_accordion, function(id) {
-          /*
-           * Our view settings
-           */
+          /* Our view settings */
           var usegroupheader = this.usegroupheader;
-          // the selectors we have to play with
-          var displaySelector = '.view-id-'+ this.viewname +'.view-display-id-'+ this.display +' .view-content';
+          var viewname = this.viewname;
+          var display = this.display;
+
+          /* the selectors we have to play with */
+          var displaySelector = '.view-id-'+ viewname +'.view-display-id-'+ display +' .view-content';
           var headerSelector = usegroupheader ? (this.header) : ('.' + this.header); // this.header is the class of our first field
 
-          // Prepare our markup for jquery ui accordion
-          $(headerSelector).each(function(){
+          /* Prepare our markup for jquery ui accordion */
+          $(headerSelector).each(function(i){
+            var hash = "#"+ viewname +"-"+ display +"-"+ i; // hash to use for accordion navigation option
             var $this = $(this);
+            var $link = $this.find('a');
             // if the header is not already using an anchor tag, add one
-            if($this.find('a').length == 0){
-              $this.wrapInner('<a href="#"></a>');
+            if($link.length == 0){
+              // setup anchor tag for navigation
+              $this.wrapInner('<a href="'+hash+'"></a>');
             }
+            // if there are already, they wont be clickable with js enabled, we'll use them for accordion navigation
+            else{
+              // @FIXME ?
+              // We are currently destroying the original link, though search crawlers will stil see it.
+              // Links in accordions are NOT clickable and leaving them would kill deep linking.
+              $link.get(0).href = hash;
+            }
+
             // Wrap the accordion content within a div if necessary
             if (!usegroupheader) {
-               $(this).siblings().wrapAll('<div></div');
+               $this.siblings().wrapAll('<div></div');
              }
           });
 
-          // jquery_ui accordion call
+          /* jQuery UI accordion call */
           $(displaySelector).accordion({
               header: headerSelector,
               animated: this.animated,
