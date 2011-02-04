@@ -160,6 +160,26 @@ class views_accordion_style_plugin extends views_plugin_style {
     );
   }
 
+    /*
+   * pre_render() necesary to prevent markup mayhem
+   */
+  function pre_render() {
+    // Find out about the header field options
+    $fields = array_values($this->display->display_options['fields']);
+    // setup our wrapper class
+    // find out  if the user configured its own class
+    $header_wrapper_class = $this->view->field[$fields[0]['id']]->options['element_wrapper_class'];
+    $header_class = 'views-accordion-header';
+    // set up that with our own class
+    $header_wrapper_class = empty($header_wrapper_class) ? $header_class : $header_wrapper_class .' '. $header_class;
+    $this->view->field[$fields[0]['id']]->options['element_wrapper_class'] = $header_wrapper_class;
+
+    // make sure we are using a div for markup at least
+    if (empty($this->view->field[$fields[0]['id']]->options['element_wrapper_type'])){
+      $this->view->field[$fields[0]['id']]->options['element_wrapper_type'] = 'div';
+    }
+  }
+
   /**
    * Render the display in this style.
    */
@@ -211,13 +231,7 @@ class views_accordion_style_plugin extends views_plugin_style {
 
     // Used to get the first field to be used as the accordion header
     if ($view_settings['usegroupheader'] == 0) {
-      $i = 0;
-      foreach ($this->view->field as $id => $value) {
-        if (($i == 0) && ($value->options['exclude'] == 0)) {
-          $view_settings['header'] = 'views-field-'. str_replace('_' , '-' , $id);
-          $i++;
-        }
-      }
+      $view_settings['header'] = 'views-accordion-header';
     }
 
     drupal_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
