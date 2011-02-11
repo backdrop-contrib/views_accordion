@@ -165,17 +165,17 @@ class views_accordion_style_plugin extends views_plugin_style {
    */
   function pre_render() {
     // Find out about the header field options
-    $fields = array_values($this->display->display_options['fields']);
+    $fields = array_values($this->display->handler->get_option('fields'));
     // setup our wrapper class
     // find out  if the user configured its own class
-    $header_wrapper_class = $this->view->field[$fields[0]['id']]->options['element_wrapper_class'];
+    $header_wrapper_class = $fields[0]['element_wrapper_class'];
     $header_class = 'views-accordion-header';
     // set up that with our own class
     $header_wrapper_class = empty($header_wrapper_class) ? $header_class : $header_wrapper_class .' '. $header_class;
     $this->view->field[$fields[0]['id']]->options['element_wrapper_class'] = $header_wrapper_class;
 
     // make sure we are using a div for markup at least
-    if (empty($this->view->field[$fields[0]['id']]->options['element_wrapper_type'])){
+    if (empty($fields[0]['element_wrapper_type'])) {
       $this->view->field[$fields[0]['id']]->options['element_wrapper_type'] = 'div';
     }
   }
