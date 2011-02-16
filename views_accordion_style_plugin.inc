@@ -166,17 +166,22 @@ class views_accordion_style_plugin extends views_plugin_style {
   function pre_render() {
     // Find out about the header field options
     $fields = array_values($this->display->handler->get_option('fields'));
-    // setup our wrapper class
-    // find out  if the user configured its own class
-    $header_wrapper_class = $fields[0]['element_wrapper_class'];
     $header_class = 'views-accordion-header';
-    // set up that with our own class
-    $header_wrapper_class = empty($header_wrapper_class) ? $header_class : $header_wrapper_class .' '. $header_class;
-    $this->view->field[$fields[0]['id']]->options['element_wrapper_class'] = $header_wrapper_class;
-
-    // make sure we are using a div for markup at least
-    if (empty($fields[0]['element_wrapper_type'])) {
-      $this->view->field[$fields[0]['id']]->options['element_wrapper_type'] = 'div';
+    // Add header class to first not-excluded field
+    foreach ($fields as $field) {
+      if ($field['exclude'] == 0) {
+        // setup our wrapper class
+        // find out  if the user configured its own class
+        $header_wrapper_class = $field['element_wrapper_class'];
+        // set up that with our own class
+        $header_wrapper_class = empty($header_wrapper_class) ? $header_class : $header_wrapper_class .' '. $header_class;
+        $this->view->field[$field['id']]->options['element_wrapper_class'] = $header_wrapper_class;
+        // make sure we are using a div for markup at least
+        if (empty($field['element_wrapper_type'])) {
+            $this->view->field[$field['id']]->options['element_wrapper_type'] = 'div';
+        }
+        break;
+      }
     }
   }
 
