@@ -47,7 +47,7 @@ Drupal.behaviors.views_accordion =  {
               event: this.event,
               fillSpace: this.fillspace,
               navigation: this.navigation,
-              clearstyle: this.clearstyle,
+              clearstyle: this.clearstyle
           });
         });
       })(jQuery);
