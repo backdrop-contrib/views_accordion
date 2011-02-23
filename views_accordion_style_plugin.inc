@@ -236,7 +236,7 @@ class views_accordion_style_plugin extends views_plugin_style {
 
     // Used to get the first field to be used as the accordion header
     if ($view_settings['usegroupheader'] == 0) {
-      $view_settings['header'] = 'views-accordion-header';
+      $view_settings['header'] = '.views-accordion-header';
     }
 
     drupal_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');

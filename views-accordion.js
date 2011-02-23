@@ -11,10 +11,10 @@ Drupal.behaviors.views_accordion =  {
 
           /* the selectors we have to play with */
           var displaySelector = '.view-id-'+ viewname +'.view-display-id-'+ display +' .view-content';
-          var headerSelector = usegroupheader ? (this.header) : ('.' + this.header); // this.header is the class of our first field
+          var headerSelector = this.header;
 
           /* Prepare our markup for jquery ui accordion */
-          $(headerSelector).each(function(i){
+          $(displaySelector +' '+ headerSelector).each(function(i){
             var hash = "#"+ viewname +"-"+ display +"-"+ i; // hash to use for accordion navigation option
             var $this = $(this);
             var $link = $this.find('a');
