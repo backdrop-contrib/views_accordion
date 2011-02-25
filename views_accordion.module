@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Provide an accordion display style for Views.

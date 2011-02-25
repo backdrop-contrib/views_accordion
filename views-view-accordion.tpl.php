@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Displays the items of the accordion.
