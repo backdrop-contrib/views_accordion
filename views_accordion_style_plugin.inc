@@ -168,13 +168,19 @@ class views_accordion_style_plugin extends views_plugin_style {
     $header_class = 'views-accordion-header';
     // Add header class to first not-excluded field
     foreach ($fields as $field) {
-      if (isset($field['exclude']) && $field['exclude'] == 0) {
+      if (!isset($field['exclude']) || ($field['exclude'] == 0)) {
         // setup our wrapper class
-        // find out  if the user configured its own class
-        $header_wrapper_class = $field['element_wrapper_class'];
-        // set up that with our own class
-        $header_wrapper_class = empty($header_wrapper_class) ? $header_class : $header_wrapper_class .' '. $header_class;
+        // if the user configured its own class, set that up with our own class
+        if(!empty($field['element_wrapper_class'])) {
+          $header_wrapper_class = $field['element_wrapper_class'] .' '. $header_class;
+        }
+        // otherwise use our own class only
+        else {
+          $header_wrapper_class = $header_class;
+        }
+        // setup the view to use our processed wrapper class
         $this->view->field[$field['id']]->options['element_wrapper_class'] = $header_wrapper_class;
+
         // make sure we are using a div for markup at least
         if (empty($field['element_wrapper_type'])) {
             $this->view->field[$field['id']]->options['element_wrapper_type'] = 'div';
