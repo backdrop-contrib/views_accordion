@@ -168,7 +168,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     $header_class = 'views-accordion-header';
     // Add header class to first not-excluded field
     foreach ($fields as $field) {
-      if ($field['exclude'] == 0) {
+      if (isset($field['exclude']) && $field['exclude'] == 0) {
         // setup our wrapper class
         // find out  if the user configured its own class
         $header_wrapper_class = $field['element_wrapper_class'];
