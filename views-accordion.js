@@ -13,7 +13,7 @@ Drupal.behaviors.views_accordion =  {
           var headerSelector = this.header;
 
           /* Prepare our markup for jquery ui accordion */
-          $(displaySelector +' '+ headerSelector).each(function(i){
+          $(displaySelector +' '+ headerSelector +':not(.ui-accordion-header)').each(function(i){
             var hash = "#"+ viewname +"-"+ display +"-"+ i; // hash to use for accordion navigation option
             var $this = $(this);
             var $link = $this.find('a');
@@ -32,12 +32,12 @@ Drupal.behaviors.views_accordion =  {
 
             // Wrap the accordion content within a div if necessary
             if (!usegroupheader) {
-               $this.siblings().wrapAll('<div></div');
-             }
+              $this.siblings().wrapAll('<div></div>');
+            }
           });
 
           /* jQuery UI accordion call */
-          $(displaySelector).accordion({
+          $(displaySelector +':not(.ui-accordion)').accordion({
               header: headerSelector,
               animated: this.animated,
               active: this.rowstartopen,
