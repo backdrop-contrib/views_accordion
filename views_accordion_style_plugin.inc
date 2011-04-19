@@ -161,7 +161,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     /*
    * pre_render() necesary to prevent markup mayhem
    */
-  function pre_render() {
+  function pre_render($result) {
     // Find out about the header field options
     $fields = array_values($this->display->handler->get_option('fields'));
     $header_class = 'views-accordion-header';
