@@ -205,7 +205,15 @@ class views_accordion_style_plugin extends views_plugin_style {
    * Render the display in this style.
    */
   function render() {
-    $output = parent::render();
+    $output = '';
+    // Prevent errors if users select content instead of fields as row style
+    // This forces them to use field as row style, no other way that I can think of
+    if(parent::uses_fields()){
+      $output = parent::render();
+    }
+    else {
+      drupal_set_message('Views accordion requires Fields as row style', 'error');
+    }
 
     if ($this->options['disableifone'] == '1') {
       if(count($this->rendered_fields) < 2) {
