@@ -22,10 +22,12 @@ class views_accordion_style_plugin extends views_plugin_style {
     $options['fillspace'] = array('default' => 0);
     $options['navigation'] = array('default' => 0);
     $options['clearstyle'] = array('default' => 0);
+    $options['disableifone'] = array('default' => 0);
 
     /*
      * @TODO:
      * 1. Figure out if/how to provide support for jQuery UI themes
+     *    See http://drupal.org/node/388384 perhaps
      * 2. Provide support for missing accordion options:
      *    disabled
      *    icons
@@ -156,6 +158,12 @@ class views_accordion_style_plugin extends views_plugin_style {
       '#default_value' => $this->options['clearstyle'],
       '#description' => t("If set, clears height and overflow styles after finishing animations. This enables accordions to work with dynamic content. Won't work together with autoHeight."),
     );
+    $form['disableifone'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Disable if only one result'),
+      '#default_value' => $this->options['disableifone'],
+      '#description' => t("If set, the accordion will not be shown when there are less than 2 results."),
+    );
   }
 
     /*
@@ -198,6 +206,12 @@ class views_accordion_style_plugin extends views_plugin_style {
    */
   function render() {
     $output = parent::render();
+
+    if ($this->options['disableifone'] == '1') {
+      if(count($this->rendered_fields) < 2) {
+        return $output;
+      }
+    }
 
     // dpm($this->display->handler->get_option('fields')); // for dev-troubleshooting
 
