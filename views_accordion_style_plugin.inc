@@ -170,6 +170,9 @@ class views_accordion_style_plugin extends views_plugin_style {
    * pre_render() necesary to prevent markup mayhem
    */
   function pre_render($result) {
+    drupal_add_library('system', 'ui.accordion');
+    drupal_add_js(drupal_get_path('module', 'views_accordion') .'/views-accordion.js');
+
     // no need do anything if we are using the grouped field as the header
     if ($this->options['use-grouping-header']){
       return;
@@ -222,9 +225,6 @@ class views_accordion_style_plugin extends views_plugin_style {
     }
 
     // dpm($this->display->handler->get_option('fields')); // for dev-troubleshooting
-
-    drupal_add_library('system', 'ui.accordion');
-    drupal_add_js(drupal_get_path('module', 'views_accordion') .'/views-accordion.js');
 
     // Add the appropiate effect library if necessary
     $effect = $this->options['animated'];
