@@ -8,6 +8,9 @@ Drupal.behaviors.views_accordion = {
           var viewname = this.viewname;
           var display = this.display;
 
+          /* Our panel heightStyle setting */
+          var heightStyle = (this.autoheight == 1) ? 'auto' : (this.fillspace == 1 ? 'fill' : 'content');
+
           /* the selectors we have to play with */
           var displaySelector = '.view-id-' + viewname + '.view-display-id-' + display + ' > .view-content';
           var headerSelector = this.header;
@@ -44,6 +47,7 @@ Drupal.behaviors.views_accordion = {
               active: this.rowstartopen,
               collapsible: this.collapsible,
               autoHeight: this.autoheight,
+              heightStyle: heightStyle,
               event: this.event,
               fillSpace: this.fillspace,
               navigation: this.navigation,
