@@ -40,8 +40,20 @@ Drupal.behaviors.views_accordion = {
             }
           });
 
-          /* jQuery UI accordion call */
-          $(displaySelector + ':not(.ui-accordion)').accordion({
+          var options = {};
+          if (this.newoptions) {
+            /* jQuery UI accordion options format changed for jquery >= 1.9 */
+            options = {
+              header: headerSelector,
+              animated: this.animated,
+              active: this.rowstartopen,
+              collapsible: this.collapsible,
+              event: this.event,
+              heightStyle: this.autoheight ? 'auto' : this.fillspace ? 'fill' : 'content',
+            };
+          }
+          else {
+            options = {
               header: headerSelector,
               animated: this.animated,
               active: this.rowstartopen,
@@ -52,7 +64,10 @@ Drupal.behaviors.views_accordion = {
               fillSpace: this.fillspace,
               navigation: this.navigation,
               clearstyle: this.clearstyle
-          });
+            };
+          }
+          /* jQuery UI accordion call */
+          $(displaySelector + ':not(.ui-accordion)').accordion(options);
         });
       })(jQuery);
     }
