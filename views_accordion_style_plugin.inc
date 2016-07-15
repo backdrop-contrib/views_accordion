@@ -58,6 +58,7 @@ class views_accordion_style_plugin extends views_plugin_style {
       $rsopen_options[] = t('Row ') . $i;
     }
     $rsopen_options['none'] = t('None');
+    $rsopen_options['random'] = t('Random');
 
     $animated_options = array(
       'none' => t('None'),
@@ -251,8 +252,13 @@ class views_accordion_style_plugin extends views_plugin_style {
     // we do it here so we dont have it run once every group.
     $view_settings['collapsible'] = $this->options['collapsible'];
 
-    // The +0 forces it to add it as an integrer instead of a string - ugly hack?
-    $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : $this->options['row-start-open'] + 0;
+    if ($this->options['row-start-open'] == 'random') {
+      $view_settings['rowstartopen'] = 'random';
+    }
+    else {
+      // The +0 forces it to add it as an integrer instead of a string - ugly hack?
+      $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : $this->options['row-start-open'] + 0;
+    }
     $view_settings['animated'] = ($this->options['animated'] == 'none') ? FALSE : $this->options['animated'];
     $view_settings['autoheight'] = $this->options['autoheight'];
     $view_settings['event'] = $this->options['event'];

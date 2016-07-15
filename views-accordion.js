@@ -15,6 +15,9 @@ Drupal.behaviors.views_accordion = {
           var displaySelector = '.view-id-' + viewname + '.view-display-id-' + display + ' > .view-content';
           var headerSelector = this.header;
 
+          /* The row count to be used if Row to display opened on start is set to random */
+          var row_count = 0;
+
           /* Prepare our markup for jquery ui accordion */
           $(displaySelector + ' ' + headerSelector + ':not(.ui-accordion-header)').each(function(i){
         	// Hash to use for accordion navigation option.
@@ -38,7 +41,12 @@ Drupal.behaviors.views_accordion = {
             if (!usegroupheader) {
               $this.siblings().wrapAll('<div></div>');
             }
+            row_count++;
           });
+
+          if (this.rowstartopen == 'random') {
+            this.rowstartopen = Math.floor(Math.random() * row_count);
+          }
 
           var options = {};
           if (this.newoptions) {
