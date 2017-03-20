@@ -1,3 +1,7 @@
+/**
+ * @file
+ * Javascript for views-accordion.
+ */
 Drupal.behaviors.views_accordion = {
   attach: function(context) {
     if(Drupal.settings.views_accordion){

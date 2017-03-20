@@ -55,7 +55,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     // Setup our array of options for choosing which row should start opened (row-start-open).
     $rsopen_options = array();
     for ($i = 1; $i <= $maxitems; $i++) {
-      $rsopen_options[] = t('Row ') . $i;
+      $rsopen_options[] = t('Row') . $i;
     }
     $rsopen_options['none'] = t('None');
     $rsopen_options['random'] = t('Random');
@@ -272,7 +272,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     $view_settings['viewname'] = $this->view->name;
     $view_settings['usegroupheader'] = $view_settings['grouping'] ? $this->options['use-grouping-header'] : 0;
 
-    $accordion_id = 'views-accordion-' . $this->view->name .'-' . $this->view->current_display;
+    $accordion_id = 'views-accordion-' . $this->view->name . '-' . $this->view->current_display;
 
     if ($view_settings['usegroupheader'] == 1) {
       $view_settings['header'] = 'h3.' . $accordion_id . '-header';
