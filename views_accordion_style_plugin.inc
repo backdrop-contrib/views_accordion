@@ -256,8 +256,7 @@ class views_accordion_style_plugin extends views_plugin_style {
       $view_settings['rowstartopen'] = 'random';
     }
     else {
-      // The +0 forces it to add it as an integrer instead of a string - ugly hack?
-      $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : $this->options['row-start-open'] + 0;
+      $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : (int) $this->options['row-start-open'];
     }
     $view_settings['animated'] = ($this->options['animated'] == 'none') ? FALSE : $this->options['animated'];
     $view_settings['autoheight'] = $this->options['autoheight'];
