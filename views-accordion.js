@@ -2,11 +2,11 @@
  * @file
  * Javascript for views-accordion.
  */
-Drupal.behaviors.views_accordion = {
+Backdrop.behaviors.views_accordion = {
   attach: function(context) {
-    if(Drupal.settings.views_accordion){
+    if(Backdrop.settings.views_accordion){
       (function ($) {
-        $.each(Drupal.settings.views_accordion, function(id) {
+        $.each(Backdrop.settings.views_accordion, function(id) {
           /* Our view settings */
           var usegroupheader = this.usegroupheader;
           var viewname = this.viewname;

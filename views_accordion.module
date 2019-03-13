@@ -3,7 +3,7 @@
  * @file
  * Provide an accordion display style for Views.
  *
- * This is a placeholder file so drupal will enable the module. All logic is
+ * This is a placeholder file so backdrop will enable the module. All logic is
  * contained in other files located with the module.
  */
 
@@ -67,7 +67,7 @@ function template_preprocess_views_view_accordion(&$vars) {
   $vars['view_accordion_id'] = 'views-accordion-' . $vars['view']->name . '-' . $vars['view']->current_display . '-header';
 
   // Add the css for fixing/preventing accordion issues.
-  drupal_add_css(drupal_get_path('module', 'views_accordion') . '/views-accordion.css');
+  backdrop_add_css(backdrop_get_path('module', 'views_accordion') . '/views-accordion.css');
 }
 
 /**
@@ -81,6 +81,7 @@ function template_preprocess_views_view_accordion(&$vars) {
  *   FALSE for each time after that
  */
 function theme_views_accordion_display_item($id) {
+  // TODO: Should this theme views_accordion_display_item be declared in hook_theme()?
   static $display = array();
 
   if (!isset($display[$id])) {
@@ -94,4 +95,13 @@ function theme_views_accordion_display_item($id) {
   }
 
   return $output;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function views_accordion_autoload_info() {
+  return array(
+    'views_accordion_style_plugin' => 'views_accordion_style_plugin.inc',
+  );
 }

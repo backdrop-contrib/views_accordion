@@ -97,9 +97,9 @@ class views_accordion_style_plugin extends views_plugin_style {
       'easeOutElastic' => t('easeOutElastic'),
       'easeInOutElastic' => t('easeInOutElastic'),
       /*
-       * @TODO: Any other animations core comes with that we can use with the accordion?
-       * We've used all the easing effects form ui effects core.
-       */
+ * @TODO: Any other animations core comes with that we can use with the accordion?
+ * We've used all the easing effects form ui effects core.
+ */
     );
 
     $form['use-grouping-header'] = array(
@@ -175,8 +175,8 @@ class views_accordion_style_plugin extends views_plugin_style {
    * pre_render() necesary to prevent markup mayhem.
    */
   public function pre_render($result) {
-    drupal_add_library('system', 'ui.accordion');
-    drupal_add_js(drupal_get_path('module', 'views_accordion') . '/views-accordion.js');
+    backdrop_add_library('system', 'ui.accordion');
+    backdrop_add_js(backdrop_get_path('module', 'views_accordion') . '/views-accordion.js');
 
     // No need do anything if we are using the grouped field as the header.
     if ($this->options['use-grouping-header']) {
@@ -221,7 +221,7 @@ class views_accordion_style_plugin extends views_plugin_style {
       $output = parent::render();
     }
     else {
-      drupal_set_message(t('Views accordion requires Fields as row style, but the view <em>@view</em> is configured with <em>@row_plugin_option</em> as a row style.', array('@view' => $this->view->name, '@row_plugin_option' => $row_plugin_option)), 'error');
+      backdrop_set_message(t('Views accordion requires Fields as row style, but the view <em>@view</em> is configured with <em>@row_plugin_option</em> as a row style.', array('@view' => $this->view->name, '@row_plugin_option' => $row_plugin_option)), 'error');
       return;
     }
 
@@ -239,12 +239,12 @@ class views_accordion_style_plugin extends views_plugin_style {
       // For now we only use ui core effects library, which provides the easing effects.
       // This switch is left here in case we actualy need to load any other libraries.
       switch ($effect) {
-          default:
-            $library = 'effects';
-            break;
+        default:
+          $library = 'effects';
+          break;
       }
       if (isset($library)) {
-        drupal_add_library('system', 'effects');
+        backdrop_add_library('system', 'effects');
       }
     }
 
@@ -283,9 +283,10 @@ class views_accordion_style_plugin extends views_plugin_style {
     }
 
     // Use new options format if jquery_update has installed a version >= 1.9.
+    // TODO This variable was probably removed in Backdrop without replacement.
     $view_settings['newoptions'] = version_compare(variable_get('jquery_update_jquery_version', '0.0'), '1.9', '>=');
 
-    drupal_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
+    backdrop_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
 
     return $output;
   }
