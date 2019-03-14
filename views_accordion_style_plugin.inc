@@ -172,12 +172,11 @@ class views_accordion_style_plugin extends views_plugin_style {
   }
 
   /**
-   * pre_render() necesary to prevent markup mayhem.
+   * pre_render() necessary to prevent markup mayhem.
    */
   public function pre_render($result) {
     backdrop_add_library('system', 'ui.accordion');
-    backdrop_add_js(backdrop_get_path('module', 'views_accordion') . '/views-accordion.js');
-
+    backdrop_add_js(backdrop_get_path('module', 'views_accordion') . '/js/views-accordion.js');
     // No need do anything if we are using the grouped field as the header.
     if ($this->options['use-grouping-header']) {
       return;
@@ -198,6 +197,7 @@ class views_accordion_style_plugin extends views_plugin_style {
           $header_wrapper_class = $header_class;
         }
         // Setup the view to use our processed wrapper class.
+        
         $this->view->field[$field['id']]->options['element_wrapper_class'] = $header_wrapper_class;
 
         // Make sure we are using a div for markup at least.
@@ -231,8 +231,6 @@ class views_accordion_style_plugin extends views_plugin_style {
       }
     }
 
-    // dpm($this->display->handler->get_option('fields')); // for dev-troubleshooting
-
     // Add the appropiate effect library if necessary.
     $effect = $this->options['animated'];
     if (($effect !== 'none') && ($effect !== 'slide')) {
@@ -248,8 +246,8 @@ class views_accordion_style_plugin extends views_plugin_style {
       }
     }
 
-    // Preparing the js variables and adding the js to our display
-    // we do it here so we dont have it run once every group.
+    // Preparing the js variables and adding the js to our display.
+    // We do it here so we dont have it run once every group.
     $view_settings['collapsible'] = $this->options['collapsible'];
 
     if ($this->options['row-start-open'] == 'random') {
@@ -281,10 +279,6 @@ class views_accordion_style_plugin extends views_plugin_style {
     if ($view_settings['usegroupheader'] == 0) {
       $view_settings['header'] = '.views-accordion-header';
     }
-
-    // Use new options format if jquery_update has installed a version >= 1.9.
-    // TODO This variable was probably removed in Backdrop without replacement.
-    $view_settings['newoptions'] = version_compare(variable_get('jquery_update_jquery_version', '0.0'), '1.9', '>=');
 
     backdrop_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
 

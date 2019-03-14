@@ -17,6 +17,7 @@ Backdrop.behaviors.views_accordion = {
 
           /* the selectors we have to play with */
           var displaySelector = '.view-id-' + viewname + '.view-display-id-' + display + ' > .view-content';
+          console.log(displaySelector);
           var headerSelector = this.header;
 
           /* The row count to be used if Row to display opened on start is set to random */
@@ -52,10 +53,7 @@ Backdrop.behaviors.views_accordion = {
             this.rowstartopen = Math.floor(Math.random() * row_count);
           }
 
-          var options = {};
-          if (this.newoptions) {
-            /* jQuery UI accordion options format changed for jquery >= 1.9 */
-            options = {
+          var options = {
               header: headerSelector,
               animated: this.animated,
               active: this.rowstartopen,
@@ -63,21 +61,6 @@ Backdrop.behaviors.views_accordion = {
               event: this.event,
               heightStyle: this.autoheight ? 'auto' : this.fillspace ? 'fill' : 'content',
             };
-          }
-          else {
-            options = {
-              header: headerSelector,
-              animated: this.animated,
-              active: this.rowstartopen,
-              collapsible: this.collapsible,
-              autoHeight: this.autoheight,
-              heightStyle: heightStyle,
-              event: this.event,
-              fillSpace: this.fillspace,
-              navigation: this.navigation,
-              clearstyle: this.clearstyle
-            };
-          }
           /* jQuery UI accordion call */
           $(displaySelector + ':not(.ui-accordion)').accordion(options);
         });

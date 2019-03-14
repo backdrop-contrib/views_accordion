@@ -12,3 +12,14 @@
 .ui-accordion .ui-accordion-header .field-items a {
   padding: 0 0.5em 1em 1.9em;
 }
+
+/* Vanilla by default */
+.views-view-accordion .ui-state-default {
+  background-color: transparent;
+  color: #000;
+}
+
+.views-view-accordion .ui-state-active a, .views-view-accordion .ui-state-active a:link {
+  color: #000;
+  font-weight: bold;
+}
