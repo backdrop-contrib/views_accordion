@@ -8,6 +8,7 @@
  * Implements views_plugin_style().
  */
 class views_accordion_style_plugin extends views_plugin_style {
+
   /**
    * Set default options.
    */
@@ -43,16 +44,21 @@ class views_accordion_style_plugin extends views_plugin_style {
   public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
     $form['grouping']['#prefix'] = '<div class="form-item">' . t('<strong>IMPORTANT:</strong> The <em>first field</em> in order of appearance <em>will</em> be the one used as the "header" or "trigger" of the accordion action.') . '</div>';
-    // Available valid options for grouping (used for use-grouping-header #dependency).
+    // Available valid options for grouping (used for use-grouping-header
+    // #dependency).
+    $options = [];
     foreach ($this->display->handler->get_handlers('field') as $field => $handler) {
       $options[] = $field;
     }
-    // Find out how many items the display is currently configured to show (row-start-open).
+    // Find out how many items the display is currently configured to show
+    // (row-start-open).
     $maxitems = $this->display->handler->get_option('items_per_page');
-    // If items_per_page is set to unlimitted (0), 10 rows will be what the user gets to choose from.
+    // If items_per_page is set to unlimitted (0), 10 rows will be what the user
+    // gets to choose from.
     $maxitems = ($maxitems == 0) ? 10 : $maxitems;
 
-    // Setup our array of options for choosing which row should start opened (row-start-open).
+    // Setup our array of options for choosing which row should start opened
+    // (row-start-open).
     $rsopen_options = array();
     for ($i = 1; $i <= $maxitems; $i++) {
       $rsopen_options[] = t('Row') . $i;
@@ -97,7 +103,8 @@ class views_accordion_style_plugin extends views_plugin_style {
       'easeOutElastic' => t('easeOutElastic'),
       'easeInOutElastic' => t('easeInOutElastic'),
       /*
-       * @TODO: Any other animations core comes with that we can use with the accordion?
+       * @TODO: Any other animations core comes with that we can use with the
+       * accordion?
        * We've used all the easing effects form ui effects core.
        */
     );
@@ -172,7 +179,7 @@ class views_accordion_style_plugin extends views_plugin_style {
   }
 
   /**
-   * pre_render() necesary to prevent markup mayhem.
+   * Necessary to prevent markup mayhem.
    */
   public function pre_render($result) {
     drupal_add_library('system', 'ui.accordion');
@@ -213,17 +220,7 @@ class views_accordion_style_plugin extends views_plugin_style {
    * Render the display in this style.
    */
   public function render() {
-    $output = '';
-    $row_plugin_option = $this->display->handler->get_option('row_plugin');
-    // Prevent errors if users select content instead of fields as row style.
-    // This forces them to use field as row style, no other way that I can think of.
-    if ($row_plugin_option == 'fields') {
-      $output = parent::render();
-    }
-    else {
-      drupal_set_message(t('Views accordion requires Fields as row style, but the view <em>@view</em> is configured with <em>@row_plugin_option</em> as a row style.', array('@view' => $this->view->name, '@row_plugin_option' => $row_plugin_option)), 'error');
-      return;
-    }
+    $output = parent::render();
 
     if ($this->options['disableifone'] == '1') {
       if (count($this->rendered_fields) < 2) {
@@ -231,17 +228,16 @@ class views_accordion_style_plugin extends views_plugin_style {
       }
     }
 
-    // dpm($this->display->handler->get_option('fields')); // for dev-troubleshooting
-
-    // Add the appropiate effect library if necessary.
+    // Add the appropriate effect library if necessary.
     $effect = $this->options['animated'];
     if (($effect !== 'none') && ($effect !== 'slide')) {
-      // For now we only use ui core effects library, which provides the easing effects.
-      // This switch is left here in case we actualy need to load any other libraries.
+      // For now we only use ui core effects library, which provides the easing
+      // effects.This switch is left here in case we actualy need to load any
+      // other libraries.
       switch ($effect) {
-          default:
-            $library = 'effects';
-            break;
+        default:
+          $library = 'effects';
+          break;
       }
       if (isset($library)) {
         drupal_add_library('system', 'effects');
@@ -289,4 +285,20 @@ class views_accordion_style_plugin extends views_plugin_style {
 
     return $output;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validate() {
+    $errors = parent::validate();
+    if ($this->display->handler->get_option('row_plugin') !== 'fields') {
+      $row_plugin = $this->display->handler->get_plugin('row');
+      $errors[] = t('Views accordion requires Fields as row style, but the view <em>@view_name</em> is configured with <em>@row_plugin_title</em> as a row style.', array(
+        '@view_name' => $this->view->name,
+        '@row_plugin_title' => $row_plugin->definition['title'],
+      ));
+    }
+    return $errors;
+  }
+
 }
