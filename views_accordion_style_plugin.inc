@@ -10,6 +10,26 @@
 class views_accordion_style_plugin extends views_plugin_style {
 
   /**
+   * Whether or not jquery is higher than 1.9.
+   *
+   * Accordion options format changed for jquery >= 1.9
+   *
+   * @var bool
+   */
+  public $newoptions;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function init(&$view, &$display, $options = NULL) {
+    parent::init($view, $display, $options);
+    $this->newoptions = FALSE;
+    if (module_exists('jquery_update')) {
+      $this->newoptions = version_compare(variable_get('jquery_update_jquery_version', '0.0'), '1.9', '>=');
+    }
+  }
+
+  /**
    * Set default options.
    */
   public function option_definition() {
@@ -18,6 +38,10 @@ class views_accordion_style_plugin extends views_plugin_style {
     $options['collapsible'] = array('default' => 0);
     $options['row-start-open'] = array('default' => 0);
     $options['animated'] = array('default' => 'slide');
+    // Animate duration only available from jquery >= 1.9.
+    if ($this->newoptions) {
+      $options['animation_time'] = array('default' => 300);
+    }
     $options['autoheight'] = array('default' => 1);
     $options['event'] = array('default' => 'click');
     $options['fillspace'] = array('default' => 0);
@@ -66,6 +90,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     $rsopen_options['none'] = t('None');
     $rsopen_options['random'] = t('Random');
 
+    // The easing effects from jQuery UI.
     $animated_options = array(
       'none' => t('None'),
       'slide' => t('Slide'),
@@ -102,12 +127,12 @@ class views_accordion_style_plugin extends views_plugin_style {
       'easeInElastic' => t('easeInElastic'),
       'easeOutElastic' => t('easeOutElastic'),
       'easeInOutElastic' => t('easeInOutElastic'),
-      /*
-       * @TODO: Any other animations core comes with that we can use with the
-       * accordion?
-       * We've used all the easing effects form ui effects core.
-       */
     );
+    if ($this->newoptions) {
+      // Slide easing was removed from jQuery UI.
+      unset($animated_options['slide']);
+      unset($animated_options['bounceslide']);
+    }
 
     $form['use-grouping-header'] = array(
       '#type' => 'checkbox',
@@ -136,6 +161,16 @@ class views_accordion_style_plugin extends views_plugin_style {
       '#description' => t('Choose what animation effect you would like to see, or "None" to disable it.'),
       '#options' => $animated_options,
     );
+    // Animate duration only available from jquery >= 1.9.
+    if ($this->newoptions) {
+      $form['animation_time'] = [
+        '#type' => 'textfield',
+        '#title' => t('Animation time'),
+        '#default_value' => $this->options['animation_time'],
+        '#description' => t('The animation duration in milliseconds'),
+        '#element_validate' => array('views_element_validate_integer'),
+      ];
+    }
     $form['autoheight'] = array(
       '#type' => 'checkbox',
       '#title' => t('Autoheight'),
@@ -255,6 +290,9 @@ class views_accordion_style_plugin extends views_plugin_style {
       $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : (int) $this->options['row-start-open'];
     }
     $view_settings['animated'] = ($this->options['animated'] == 'none') ? FALSE : $this->options['animated'];
+    if ($this->newoptions) {
+      $view_settings['duration'] = (int) $this->options['animation_time'];
+    }
     $view_settings['autoheight'] = $this->options['autoheight'];
     $view_settings['event'] = $this->options['event'];
     $view_settings['fillspace'] = $this->options['fillspace'];
@@ -279,7 +317,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     }
 
     // Use new options format if jquery_update has installed a version >= 1.9.
-    $view_settings['newoptions'] = version_compare(variable_get('jquery_update_jquery_version', '0.0'), '1.9', '>=');
+    $view_settings['newoptions'] = $this->newoptions;
 
     drupal_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
 
