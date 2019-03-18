@@ -25,7 +25,7 @@ Backdrop.behaviors.views_accordion = {
 
           /* Prepare our markup for jquery ui accordion */
           $(displaySelector + ' ' + headerSelector + ':not(.ui-accordion-header)').each(function(i){
-        	// Hash to use for accordion navigation option.
+            // Hash to use for accordion navigation option.
             var hash = "#" + viewname + "-" + display + "-" + i;
             var $this = $(this);
             var $link = $this.find('a');
@@ -53,14 +53,24 @@ Backdrop.behaviors.views_accordion = {
             this.rowstartopen = Math.floor(Math.random() * row_count);
           }
 
-          var options = {
-              header: headerSelector,
-              animated: this.animated,
-              active: this.rowstartopen,
-              collapsible: this.collapsible,
-              event: this.event,
-              heightStyle: this.autoheight ? 'auto' : this.fillspace ? 'fill' : 'content',
-            };
+          var options = {};
+
+          options = {
+            header: headerSelector,
+            active: this.rowstartopen,
+            collapsible: this.collapsible,
+            event: this.event,
+            heightStyle: this.autoheight ? 'auto' : this.fillspace ? 'fill' : 'content',
+          };
+          if (this.animated === false) {
+            options.animate = false;
+          }
+          else {
+            options.animate = {
+              easing: this.animated,
+              duration: this.duration,
+            }
+          }
           /* jQuery UI accordion call */
           $(displaySelector + ':not(.ui-accordion)').accordion(options);
         });
