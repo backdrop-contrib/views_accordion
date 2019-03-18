@@ -25,7 +25,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     parent::init($view, $display, $options);
     $this->newoptions = FALSE;
     if (module_exists('jquery_update')) {
-      $this->newoptions = version_compare(variable_get('jquery_update_jquery_version', '0.0'), '1.9', '>=');
+      $this->newoptions = version_compare(variable_get('jquery_update_jquery_version', '1.10'), '1.9', '>=');
     }
   }
 
