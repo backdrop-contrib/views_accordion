@@ -10,21 +10,6 @@
 class views_accordion_style_plugin extends views_plugin_style {
 
   /**
-   * Whether or not jquery is higher than 1.9.
-   *
-   * Accordion options format changed for jquery >= 1.9
-   *
-   * @var bool
-   */
-
-  /**
-   * {@inheritdoc}
-   */
-  public function init(&$view, &$display, $options = NULL) {
-    parent::init($view, $display, $options);
-  }
-
-  /**
    * Set default options.
    */
   public function option_definition() {
