@@ -53,9 +53,7 @@ Backdrop.behaviors.views_accordion = {
             this.rowstartopen = Math.floor(Math.random() * row_count);
           }
 
-          var options = {};
-
-          options = {
+          var options = {
             header: headerSelector,
             active: this.rowstartopen,
             collapsible: this.collapsible,
