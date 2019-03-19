@@ -38,10 +38,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     $options['collapsible'] = array('default' => 0);
     $options['row-start-open'] = array('default' => 0);
     $options['animated'] = array('default' => 'slide');
-    // Animate duration only available from jquery >= 1.9.
-    if ($this->newoptions) {
-      $options['animation_time'] = array('default' => 300);
-    }
+    $options['animation_time'] = array('default' => 300);
     $options['autoheight'] = array('default' => 1);
     $options['event'] = array('default' => 'click');
     $options['fillspace'] = array('default' => 0);
@@ -290,9 +287,7 @@ class views_accordion_style_plugin extends views_plugin_style {
       $view_settings['rowstartopen'] = ($this->options['row-start-open'] == 'none') ? FALSE : (int) $this->options['row-start-open'];
     }
     $view_settings['animated'] = ($this->options['animated'] == 'none') ? FALSE : $this->options['animated'];
-    if ($this->newoptions) {
-      $view_settings['duration'] = (int) $this->options['animation_time'];
-    }
+    $view_settings['duration'] = (int) $this->options['animation_time'];
     $view_settings['autoheight'] = $this->options['autoheight'];
     $view_settings['event'] = $this->options['event'];
     $view_settings['fillspace'] = $this->options['fillspace'];
