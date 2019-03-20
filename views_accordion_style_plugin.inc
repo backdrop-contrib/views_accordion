@@ -67,7 +67,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     $form['grouping']['#prefix'] = '<div class="form-item">' . t('<strong>IMPORTANT:</strong> The <em>first field</em> in order of appearance <em>will</em> be the one used as the "header" or "trigger" of the accordion action.') . '</div>';
     // Available valid options for grouping (used for use-grouping-header
     // #dependency).
-    $options = [];
+    $options = array();
     foreach ($this->display->handler->get_handlers('field') as $field => $handler) {
       $options[] = $field;
     }
@@ -160,13 +160,13 @@ class views_accordion_style_plugin extends views_plugin_style {
     );
     // Animate duration only available from jquery >= 1.9.
     if ($this->newoptions) {
-      $form['animation_time'] = [
+      $form['animation_time'] = array(
         '#type' => 'textfield',
         '#title' => t('Animation time'),
         '#default_value' => $this->options['animation_time'],
         '#description' => t('The animation duration in milliseconds'),
         '#element_validate' => array('views_element_validate_integer'),
-      ];
+      );
     }
     $form['autoheight'] = array(
       '#type' => 'checkbox',
