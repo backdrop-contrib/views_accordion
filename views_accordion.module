@@ -8,12 +8,21 @@
  */
 
 /**
+ * Implementation of hook_autoload_info().
+ */
+function views_accordion_autoload_info() {
+  return array(
+    'views_accordion_style_plugin' => 'includes/views/views_accordion_style_plugin.inc',
+  );
+}
+
+/**
  * Implements hook_views_api().
  */
 function views_accordion_views_api() {
   return array(
     'api' => 3,
-    'path' => backdrop_get_path('module', 'views_accordion') . '/templates',
+    'path' => backdrop_get_path('module', 'views_accordion') . '/includes/views',
     'template path' => backdrop_get_path('module', 'views_accordion') . '/templates',
   );
 }
@@ -66,13 +75,4 @@ function theme_views_accordion_display_item($id) {
   }
 
   return $output;
-}
-
-/**
- * Implements hook_autoload_info().
- */
-function views_accordion_autoload_info() {
-  return array(
-    'views_accordion_style_plugin' => 'views_accordion_style_plugin.inc',
-  );
 }
