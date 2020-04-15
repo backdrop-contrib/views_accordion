@@ -47,7 +47,7 @@ class views_accordion_style_plugin extends views_plugin_style {
     $form['grouping']['#prefix'] = '<div class="form-item">' . t('<strong>IMPORTANT:</strong> The <em>first field</em> in order of appearance <em>will</em> be the one used as the "header" or "trigger" of the accordion action.') . '</div>';
     // Available valid options for grouping (used for use-grouping-header
     // #dependency).
-    $options = [];
+    $options = array();
     foreach ($this->display->handler->get_handlers('field') as $field => $handler) {
       $options[] = $field;
     }
