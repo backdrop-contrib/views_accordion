@@ -206,7 +206,7 @@ class views_accordion_style_plugin extends views_plugin_style {
           $header_wrapper_class = $header_class;
         }
         // Setup the view to use our processed wrapper class.
-        
+
         $this->view->field[$field['id']]->options['element_wrapper_class'] = $header_wrapper_class;
 
         // Make sure we are using a div for markup at least.
@@ -279,6 +279,25 @@ class views_accordion_style_plugin extends views_plugin_style {
     // Used to get the first field to be used as the accordion header.
     if ($view_settings['usegroupheader'] == 0) {
       $view_settings['header'] = '.views-accordion-header';
+    }
+
+    // Generate unique row IDs.
+    list($entity_type, $entities) = $this->view->query->get_result_entities($this->view->result);
+    if (count($entities)) {
+      // Generate a rowid for each result using [entity_type]-[entity_id].
+      foreach ($entities as $entity) {
+        $view_settings['rowids'][] = $entity_type . '-' . $entity->{$this->view->base_field};
+      }
+    }
+    // The view does not contain entities related to the base table/field.
+    else {
+      if ($view_settings['navigation']) {
+        // Display an error if deep links are enabled but cannot be generated.
+        backdrop_set_message('For views accordion to generate deep links unique to each view result, at least one field related to the base table must be included in the query. Base table fields can be hidden if it is desired that they be excluded in the output.', 'error');
+      }
+      for ($i = 0; $i < count($this->view->result); ++$i) {
+        $view_settings['rowids'][] = $i;
+      }
     }
 
     backdrop_add_js(array('views_accordion' => array($accordion_id => $view_settings)), 'setting');
