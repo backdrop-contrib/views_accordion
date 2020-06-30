@@ -25,11 +25,6 @@
 <?php endif; ?>
 <?php if ($use_group_header): ?><div><?php endif; ?>
   <div class="<?php print implode(' ', $classes); ?>">
-    <?php print render($title_prefix); ?>
-    <?php if ($title): ?>
-      <?php print $title; ?>
-    <?php endif; ?>
-    <?php print render($title_suffix); ?>
     <?php if (isset($header)): ?>
       <div class="view-header">
         <?php print $header; ?>
